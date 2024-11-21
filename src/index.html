@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ArcGIS API for JavaScript</title>
+  <title>3D Map with ArcGIS</title>
   <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css">
   <script src="https://js.arcgis.com/4.28/"></script>
 </head>
@@ -14,17 +14,81 @@
   <script>
     require([
       "esri/Map",
-      "esri/views/MapView"
-    ], function (Map, MapView) {
-      const map = new Map({
-        basemap: "topo-vector" // Basemap layer
+      "esri/views/SceneView",
+      "esri/Graphic",
+      "esri/layers/GraphicsLayer"
+    ], function (Map, SceneView, Graphic, GraphicsLayer) {
+      // Tạo lớp đồ họa
+      const graphicsLayer = new GraphicsLayer();
+
+      // Tạo hình cầu
+      const sphere = {
+        type: "point", // Loại hình: Điểm
+        x: -118.805, // Kinh độ
+        y: 34.027, // Vĩ độ
+        z: 500 // Chiều cao
+      };
+
+      const sphereSymbol = {
+        type: "simple-marker", // Kiểu biểu tượng
+        style: "circle",
+        color: "blue",
+        size: "20px" // Kích thước
+      };
+
+      const sphereGraphic = new Graphic({
+        geometry: sphere,
+        symbol: sphereSymbol
       });
 
-      const view = new MapView({
+      // Tạo hình hộp
+      const cube = {
+        type: "polygon",
+        rings: [
+          [-118.81, 34.02, 0],
+          [-118.81, 34.03, 0],
+          [-118.80, 34.03, 0],
+          [-118.80, 34.02, 0],
+          [-118.81, 34.02, 0]
+        ]
+      };
+
+      const cubeSymbol = {
+        type: "simple-fill",
+        color: [255, 0, 0, 0.5], // Màu đỏ trong suốt
+        outline: {
+          color: [255, 0, 0],
+          width: 2
+        }
+      };
+
+      const cubeGraphic = new Graphic({
+        geometry: cube,
+        symbol: cubeSymbol
+      });
+
+      // Thêm hình cầu và hình hộp vào lớp đồ họa
+      graphicsLayer.add(sphereGraphic);
+      graphicsLayer.add(cubeGraphic);
+
+      // Tạo bản đồ 3D
+      const map = new Map({
+        basemap: "topo-vector",
+        layers: [graphicsLayer]
+      });
+
+      // Tạo SceneView để hiển thị bản đồ 3D
+      const view = new SceneView({
         container: "viewDiv",
         map: map,
-        center: [-118.80500, 34.02700], // Longitude, latitude
-        zoom: 13
+        camera: {
+          position: {
+            x: -118.805,
+            y: 34.027,
+            z: 1000
+          },
+          tilt: 45
+        }
       });
     });
   </script>
