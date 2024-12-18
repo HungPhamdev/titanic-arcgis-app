@@ -15,80 +15,53 @@
     require([
       "esri/Map",
       "esri/views/SceneView",
+      "esri/layers/GraphicsLayer",
       "esri/Graphic",
-      "esri/layers/GraphicsLayer"
-    ], function (Map, SceneView, Graphic, GraphicsLayer) {
-      // Tạo lớp đồ họa
-      const graphicsLayer = new GraphicsLayer();
+      "esri/symbols/MeshSymbol3D",
+      "esri/geometry/Mesh",
+      "esri/geometry/Point"
+    ], function (Map, SceneView, GraphicsLayer, Graphic, MeshSymbol3D, Mesh, Point) {
 
-      // Tạo hình cầu
-      const sphere = {
-        type: "point", // Loại hình: Điểm
-        x: -118.805, // Kinh độ
-        y: 34.027, // Vĩ độ
-        z: 500 // Chiều cao
-      };
-
-      const sphereSymbol = {
-        type: "simple-marker", // Kiểu biểu tượng
-        style: "circle",
-        color: "blue",
-        size: "20px" // Kích thước
-      };
-
-      const sphereGraphic = new Graphic({
-        geometry: sphere,
-        symbol: sphereSymbol
-      });
-
-      // Tạo hình hộp
-      const cube = {
-        type: "polygon",
-        rings: [
-          [-118.81, 34.02, 0],
-          [-118.81, 34.03, 0],
-          [-118.80, 34.03, 0],
-          [-118.80, 34.02, 0],
-          [-118.81, 34.02, 0]
-        ]
-      };
-
-      const cubeSymbol = {
-        type: "simple-fill",
-        color: [255, 0, 0, 0.5], // Màu đỏ trong suốt
-        outline: {
-          color: [255, 0, 0],
-          width: 2
-        }
-      };
-
-      const cubeGraphic = new Graphic({
-        geometry: cube,
-        symbol: cubeSymbol
-      });
-
-      // Thêm hình cầu và hình hộp vào lớp đồ họa
-      graphicsLayer.add(sphereGraphic);
-      graphicsLayer.add(cubeGraphic);
-
-      // Tạo bản đồ 3D
+      // Tạo bản đồ
       const map = new Map({
-        basemap: "topo-vector",
-        layers: [graphicsLayer]
+        basemap: "topo-vector"
       });
 
-      // Tạo SceneView để hiển thị bản đồ 3D
+      // Tạo SceneView
       const view = new SceneView({
         container: "viewDiv",
         map: map,
         camera: {
           position: {
-            x: -118.805,
-            y: 34.027,
+            x: 106.760333,
+            y: 10.743998,
             z: 1000
           },
           tilt: 45
         }
+      });
+
+      // GraphicsLayer để thêm mô hình Titanic
+      const graphicsLayer = new GraphicsLayer();
+      map.add(graphicsLayer);
+
+      // Vị trí của mô hình Titanic
+      const titanicLocation = new Point({
+        x: 106.760333,
+        y: 10.743998,
+        z: 0 // Độ cao
+      });
+
+      // Tải mô hình Titanic từ file .gltf
+      Mesh.createFromGLTF("./assets/titanic/scene.gltf", {
+        draped: false,
+        location: titanicLocation // Đây phải là một đối tượng Point
+      }).then((titanicMesh) => {
+        // Thành công
+        console.log("Titanic mesh loaded:", titanicMesh);
+      }).catch((error) => {
+        // Thất bại
+        console.error("Error loading Titanic mesh:", error);
       });
     });
   </script>
