@@ -3,68 +3,32 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Map with ArcGIS</title>
-  <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css">
-  <script src="https://js.arcgis.com/4.28/"></script>
+  <meta name="viewport" content="initial-scale=1.0">
+  <title>3D Model Viewer - Titanic</title>
+  <link rel="stylesheet" href="index.css">
+
+  <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three/build/three.module.js",
+        "three/examples/jsm/loaders/GLTFLoader.js": "https://unpkg.com/three/examples/jsm/loaders/GLTFLoader.js",
+        "three/examples/jsm/controls/OrbitControls.js": "https://unpkg.com/three/examples/jsm/controls/OrbitControls.js"
+      }
+    }
+  </script>
 </head>
 
 <body>
-  <div id="viewDiv" style="width: 100%; height: 100vh;"></div>
-  <script>
-    require([
-      "esri/Map",
-      "esri/views/SceneView",
-      "esri/layers/GraphicsLayer",
-      "esri/Graphic",
-      "esri/symbols/MeshSymbol3D",
-      "esri/geometry/Mesh",
-      "esri/geometry/Point"
-    ], function (Map, SceneView, GraphicsLayer, Graphic, MeshSymbol3D, Mesh, Point) {
-
-      // Tạo bản đồ
-      const map = new Map({
-        basemap: "topo-vector"
-      });
-
-      // Tạo SceneView
-      const view = new SceneView({
-        container: "viewDiv",
-        map: map,
-        camera: {
-          position: {
-            x: 106.760333,
-            y: 10.743998,
-            z: 1000
-          },
-          tilt: 45
-        }
-      });
-
-      // GraphicsLayer để thêm mô hình Titanic
-      const graphicsLayer = new GraphicsLayer();
-      map.add(graphicsLayer);
-
-      // Vị trí của mô hình Titanic
-      const titanicLocation = new Point({
-        x: 106.760333,
-        y: 10.743998,
-        z: 0 // Độ cao
-      });
-
-      // Tải mô hình Titanic từ file .gltf
-      Mesh.createFromGLTF("./assets/titanic/scene.gltf", {
-        draped: false,
-        location: titanicLocation // Đây phải là một đối tượng Point
-      }).then((titanicMesh) => {
-        // Thành công
-        console.log("Titanic mesh loaded:", titanicMesh);
-      }).catch((error) => {
-        // Thất bại
-        console.error("Error loading Titanic mesh:", error);
-      });
-    });
-  </script>
+  <div id="heading">
+    <h1>3D MODEL OF THE TITANIC SHIP</h1>
+    <div class="border"></div>
+  </div>
+  <div id="progress-container">
+    <div id="progress">Loading...</div>
+  </div>
+  <script type="module" src="main.js"></script>
 </body>
 
 </html>
