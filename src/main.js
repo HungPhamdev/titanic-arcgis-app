@@ -1,14 +1,12 @@
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-
-console.log("it runs");
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setClearColor(0x000000);
+renderer.setClearColor(0xffffff);
 renderer.setPixelRatio(window.devicePixelRatio);
 
 renderer.shadowMap.enabled = true;
@@ -24,7 +22,11 @@ const camera = new THREE.PerspectiveCamera(
   1,
   1000
 );
-camera.position.set(4, 5, 11);
+// camera.position.set(4, 5, 11);
+
+// camera.position.set(0, 50, 100); // Move the camera back to see larger objects
+// camera.far = 5000; // Increase the far clipping plane
+// camera.updateProjectionMatrix();
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
@@ -39,13 +41,21 @@ controls.update();
 
 const groundGeometry = new THREE.PlaneGeometry(20, 20, 32, 32);
 groundGeometry.rotateX(-Math.PI / 2);
+// const groundMaterial = new THREE.MeshStandardMaterial({
+//   color: 0x555555,
+//   side: THREE.DoubleSide
+// });
+
 const groundMaterial = new THREE.MeshStandardMaterial({
-  color: 0x555555,
+  color: 0x87ceeb, // Light blue for ocean
+  metalness: 0.5, // Reflective like water
+  roughness: 0.3, // Smooth surface
   side: THREE.DoubleSide,
 });
+
 const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
-groundMesh.castShadow = false;
 groundMesh.receiveShadow = true;
+groundMesh.position.set(0, 0.5, 0); // Adjust 0.5 as needed
 scene.add(groundMesh);
 
 const spotLight = new THREE.SpotLight(0xffffff, 3000, 100, 0.22, 1);
@@ -54,6 +64,23 @@ spotLight.castShadow = true;
 spotLight.shadow.bias = -0.0001;
 scene.add(spotLight);
 
+const ambientLight = new THREE.AmbientLight(0xffffff, 1); // Soft, even lighting
+scene.add(ambientLight);
+
+const axesHelper = new THREE.AxesHelper(60); // 10-unit axis
+scene.add(axesHelper);
+
+const gridHelper = new THREE.GridHelper(50, 50); // 50x50 grid
+scene.add(gridHelper);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // Bright white light
+directionalLight.position.set(50, 100, -50);
+directionalLight.castShadow = true;
+scene.add(directionalLight);
+
+const skyColor = new THREE.Color(0x87ceeb); // Sky blue
+scene.background = skyColor;
+
 const loader = new GLTFLoader().setPath("./titanic/");
 loader.load(
   "scene.gltf",
@@ -61,15 +88,34 @@ loader.load(
     console.log("loading model");
     const mesh = gltf.scene;
 
-    mesh.traverse((child) => {
-      if (child.isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-      }
-    });
+    // Compute the bounding box of the entire model
+    const box = new THREE.Box3().setFromObject(mesh);
+    const size = new THREE.Vector3();
+    const center = new THREE.Vector3();
+    box.getSize(size);
+    box.getCenter(center);
 
-    mesh.position.set(0, 1.05, -1);
+    // Calculate the necessary upward adjustment
+    const offsetY = size.y / 2 - box.min.y;
+
+    // Scale, center, and adjust the model
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const scale = 70 / maxDim; // Scale model to fit within a 10-unit box
+    mesh.scale.set(scale, scale, scale);
+    mesh.position.set(
+      -center.x * scale, // Center horizontally
+      offsetY * scale, // Adjust vertically
+      -center.z * scale // Center depth-wise
+    );
+
+    // Position camera back based on the largest dimension
+    const cameraDistance = maxDim * 1.5; // Adjust factor as needed
+    camera.position.set(0, maxDim * 0.5, cameraDistance);
+    camera.lookAt(0, 0, 0);
+    camera.updateProjectionMatrix();
+
     scene.add(mesh);
+    console.log("Model added to scene");
 
     document.getElementById("progress-container").style.display = "none";
   },
