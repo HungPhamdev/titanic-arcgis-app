@@ -32,11 +32,12 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.enablePan = false;
 controls.minDistance = 5;
-controls.maxDistance = 20;
+controls.maxDistance = 30;
 controls.minPolarAngle = 0.5;
 controls.maxPolarAngle = 1.5;
 controls.autoRotate = false;
-controls.target = new THREE.Vector3(0, 1, 0);
+// controls.target = new THREE.Vector3(0, 1, 0);
+controls.target.set(0, 1, -4);
 controls.update();
 
 const groundGeometry = new THREE.PlaneGeometry(20, 20, 32, 32);
@@ -73,7 +74,7 @@ scene.add(axesHelper);
 const gridHelper = new THREE.GridHelper(50, 50); // 50x50 grid
 scene.add(gridHelper);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // Bright white light
+const directionalLight = new THREE.DirectionalLight(0xffffff, 2.5); // Bright white light
 directionalLight.position.set(50, 100, -50);
 directionalLight.castShadow = true;
 scene.add(directionalLight);
@@ -108,13 +109,20 @@ loader.load(
       -center.z * scale // Center depth-wise
     );
 
+    scene.add(mesh);
+
     // Position camera back based on the largest dimension
-    const cameraDistance = maxDim * 1.5; // Adjust factor as needed
-    camera.position.set(0, maxDim * 0.5, cameraDistance);
-    camera.lookAt(0, 0, 0);
+    // const cameraDistance = maxDim * 1.5; // Adjust factor as needed
+    // camera.position.set(0, maxDim * 0.5, cameraDistance);
+    // camera.lookAt(0, 0, 0);
+    // camera.updateProjectionMatrix();
+
+    // Position the camera to focus on the ship
+    const cameraDistance = maxDim * 20; // Adjust factor as needed
+    camera.position.set(0, maxDim * 10.5, cameraDistance);
+    camera.lookAt(0, offsetY * scale, 0);
     camera.updateProjectionMatrix();
 
-    scene.add(mesh);
     console.log("Model added to scene");
 
     document.getElementById("progress-container").style.display = "none";
