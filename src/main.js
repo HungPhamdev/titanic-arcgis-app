@@ -1,6 +1,10 @@
+// import * as THREE from "three";
+// import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+// import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
 import * as THREE from "three";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "GLTFLoader";
+import { OrbitControls } from "OrbitControls";
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -27,7 +31,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.enablePan = false;
 controls.minDistance = 5;
-controls.maxDistance = 20;
+controls.maxDistance = 30;
 controls.minPolarAngle = 0.5;
 controls.maxPolarAngle = 1.5;
 controls.autoRotate = false;
@@ -72,7 +76,7 @@ scene.add(directionalLight);
 const skyColor = new THREE.Color(0x87ceeb);
 scene.background = skyColor;
 
-const loader = new GLTFLoader().setPath("./titanic/");
+const loader = new GLTFLoader().setPath("titanic/");
 loader.load(
   "scene.gltf",
   (gltf) => {
@@ -105,7 +109,6 @@ loader.load(
     camera.lookAt(0, 0, 0);
     camera.updateProjectionMatrix();
 
-    scene.add(mesh);
     console.log("Model added to scene");
 
     document.getElementById("progress-container").style.display = "none";
