@@ -1,6 +1,6 @@
 @font-face {
   font-family: "SF Distant Galaxy";
-  src: local("SF Distant Galaxy"), url(fonts/SF\ Distant\ Galaxy.ttf),
+  src: local("SF Distant Galaxy"), url(./fonts/SF\ Distant\ Galaxy.ttf),
     format("ttf");
 }
 
