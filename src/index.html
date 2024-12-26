@@ -5,26 +5,17 @@
   <meta charset="utf-8">
   <title>Millennium Falcon</title>
 
-  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="./index.css">
 
-  <script async src="lib/es-module-shims.js"></script>
-  <!-- <script type="importmap">
-    {
-        "imports": {
-          "three": "https://unpkg.com/three@v0.163.0/build/three.module.js",
-          "three/addons/": "https://unpkg.com/three@v0.163.0/examples/jsm/"
-        }
-      }
-    </script> -->
+  <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
   <script type="importmap">
     {
-        "imports": {
-          "three": "lib/three.module.js",
-          "GLTFLoader": "lib/GLTFLoader.js",
-          "OrbitControls": "lib/OrbitControls.js"
-        }
+      "imports": {
+        "three": "https://unpkg.com/three@v0.163.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@v0.163.0/examples/jsm/"
       }
-    </script>
+    }
+  </script>
 </head>
 
 <body>
@@ -35,7 +26,7 @@
   <div id="progress-container">
     <div id="progress">The Titanic is loading...</div>
   </div>
-  <script type="module" src="main.js"></script>
+  <script type="module" src="./main.js"></script>
 </body>
 
 </html>

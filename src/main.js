@@ -1,10 +1,6 @@
-// import * as THREE from "three";
-// import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-// import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-
 import * as THREE from "three";
-import { GLTFLoader } from "GLTFLoader";
-import { OrbitControls } from "OrbitControls";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -76,7 +72,7 @@ scene.add(directionalLight);
 const skyColor = new THREE.Color(0x87ceeb);
 scene.background = skyColor;
 
-const loader = new GLTFLoader().setPath("titanic/");
+const loader = new GLTFLoader().setPath("./titanic/");
 loader.load(
   "scene.gltf",
   (gltf) => {
